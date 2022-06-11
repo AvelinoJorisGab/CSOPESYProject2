@@ -1,0 +1,22 @@
+Condition: passenger > capacity && capacity >= cars
+5 4 3  // Ok
+6 4 2  // ok
+4 4 3  // ok
+4 3 3  // ok
+
+Condition: passenger > capacity && capacity < cars
+2 1 5  // Problem: Starvation; prints "all rides are completed" if car[0] ran twice.
+3 2 5	 // Fix: Add state (ready_to_ride)									(passenger class)
+5 4 5		   fix bug: next() --> denominator == numCars, not capacity
+2 1 2
+6 2 4  
+
+Condition: Zero values
+2 1 0  // Problem: Exception error
+	 // Fix: Numcars cannot be 0 			     							(Main class)
+0 1 1	 
+
+Condition: capacity < passengers
+1 3 5	 // ok
+1 1 5  // ok
+
