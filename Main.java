@@ -33,53 +33,48 @@ public class Main {
     public static Car cars[];
 
     public static void main(String[] args){
-        // Step 1: Get user inputs for n, c, and m
-            Scanner reader = new Scanner(System.in);
-            System.out.print("Enter number of passenger processes: ");
-            numPassengers = reader.nextInt();
-            passengers = new Passenger[numPassengers];
-            System.out.print("Enter capacity of each car: ");
-            capacity = reader.nextInt();
-            if(numPassengers <= capacity){
-                System.out.println("Number of passengers must be greater than car capacity!");
-                System.exit(0);
-            }
+        
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Please enter amount of passengers to be processed: ");
+        numPassengers = reader.nextInt();
 
-            System.out.print("Enter number of cars: ");
-            numCars = reader.nextInt();
-            if(numCars == 0){
-                System.out.println("Number of cars cannot be 0!");
-                System.exit(0);
-            }
+        passengers = new Passenger[numPassengers];
+        System.out.print("Please enter the capacity for each car: ");
+        capacity = reader.nextInt();
 
-        // Step 2: Initialize semaphores, car, and passenger threads.
-            cars = new Car[numCars];
-            loadingArea = new Semaphore[numCars];
-            unloadingArea  = new Semaphore[numCars];
-            reader.close();
+        if(numPassengers < capacity){
+            System.out.println("Unable to process! Number of passengers must be greater than the capacity of the car!");
+            System.exit(0);
+        }
 
-            for(int i = 0; i < numCars; i++){
-                loadingArea[i] = new Semaphore(0);
-                unloadingArea[i] = new Semaphore(0);
-            }
-            loadingArea[0].release(); 
-            unloadingArea[0].release();
+        System.out.print("Please enter the number of cars: ");
+        numCars = reader.nextInt();
+        cars = new Car[numCars];
+        if(numCars == 0){
+            System.out.println("Unable to process! Number of cars must not be 0!");
+            System.exit(0);
+        }
+        
+        loadingArea = new Semaphore[numCars];
+        unloadingArea  = new Semaphore[numCars];
+        reader.close();
 
-            for(int i = 0; i < numPassengers; i++){
-                passengers[i] = new Passenger(i);
-            }
+        for(int i=0; i<numCars; i++){
+            loadingArea[i] = new Semaphore(0);
+            unloadingArea[i] = new Semaphore(0);
+        }
+        loadingArea[0].release(); 
+        unloadingArea[0].release();
 
-            for(int i = 0; i < numCars; i++){
-                cars[i] = new Car(i);
-            }
+        for(int i=0; i<numPassengers; i++){
+            passengers[i]=new Passenger(i);
+            passengers[i].start();
+        }
 
-        // Step 3: Run passenger and car threads.
-            for(int i = 0; i < numPassengers; i++){
-                passengers[i].start();
-            }
+        for(int i=0; i<numCars; i++){
+            cars[i]=new Car(i);
+            cars[i].start();
+        }
 
-            for(int i = 0; i < numCars; i++){
-                cars[i].start();
-            }
     }
 }
